@@ -77,16 +77,12 @@ modded class PS_PolyZone
 
 		factionAffil.GetOnPlayerFactionChangedInvoker().Insert(OnLocalPlayerFactionChanged);
 		m_bFactionChangeSubscribed = true;
-		abu_JIP_Debug.LogInfo("PS_PolyZone Subscribed to faction change");
 	}
 
 	protected void OnLocalPlayerFactionChanged(SCR_PlayerFactionAffiliationComponent component, Faction previousFaction, Faction newFaction)
 	{
-		string newFactionName = "Unknown";
-		if (newFaction)
-			newFactionName = newFaction.GetFactionName();
-
-		abu_JIP_Debug.LogInfo(string.Format("PS_PolyZone OnLocalPlayerFactionChanged - NewFaction: %1", newFactionName));
+		if (!newFaction)
+			return;
 
 		UnsubscribeFromFactionChange();
 		UnsubscribeFromPSFactionChange();
@@ -99,7 +95,6 @@ modded class PS_PolyZone
 			if (!m_wCanvasWidget)
 			{
 				CreateMapWidget(m_MapEntity.GetMapConfig());
-				abu_JIP_Debug.LogInfo(string.Format("PS_PolyZone created widget after faction change - Faction: %1", newFactionName));
 			}
 		}
 		else
@@ -109,7 +104,6 @@ modded class PS_PolyZone
 				m_wCanvasWidget.RemoveFromHierarchy();
 				m_wCanvasWidget = null;
 				ClearEventMask(GetOwner(), EntityEvent.POSTFRAME);
-				abu_JIP_Debug.LogInfo(string.Format("PS_PolyZone removed widget after faction change - Faction: %1", newFactionName));
 			}
 		}
 	}
@@ -125,7 +119,6 @@ modded class PS_PolyZone
 
 		playableManager.GetOnFactionChange().Insert(OnPSFactionChanged);
 		m_bPSFactionChangeSubscribed = true;
-		abu_JIP_Debug.LogInfo("PS_PolyZone Subscribed to PS_PlayableManager faction change");
 	}
 
 	protected void OnPSFactionChanged(int playerId, FactionKey factionKey, FactionKey factionKeyOld)
@@ -134,7 +127,6 @@ modded class PS_PolyZone
 		if (!pc || pc.GetPlayerId() != playerId)
 			return;
 
-		abu_JIP_Debug.LogInfo(string.Format("PS_PolyZone OnPSFactionChanged - FactionKey: %1", factionKey));
 
 		if (factionKey == "")
 			return;
@@ -150,7 +142,6 @@ modded class PS_PolyZone
 			if (!m_wCanvasWidget)
 			{
 				CreateMapWidget(m_MapEntity.GetMapConfig());
-				abu_JIP_Debug.LogInfo(string.Format("PS_PolyZone created widget after PS faction change - FactionKey: %1", factionKey));
 			}
 		}
 		else
@@ -160,7 +151,6 @@ modded class PS_PolyZone
 				m_wCanvasWidget.RemoveFromHierarchy();
 				m_wCanvasWidget = null;
 				ClearEventMask(GetOwner(), EntityEvent.POSTFRAME);
-				abu_JIP_Debug.LogInfo(string.Format("PS_PolyZone removed widget after PS faction change - FactionKey: %1", factionKey));
 			}
 		}
 	}

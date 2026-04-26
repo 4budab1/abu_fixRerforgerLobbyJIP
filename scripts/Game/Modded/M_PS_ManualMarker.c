@@ -72,16 +72,12 @@ modded class PS_ManualMarker
 
 		factionAffil.GetOnPlayerFactionChangedInvoker().Insert(OnLocalPlayerFactionChanged);
 		m_bFactionChangeSubscribed = true;
-		abu_JIP_Debug.LogInfo(string.Format("PS_ManualMarker Subscribed to faction change - Marker: %1", GetOrigin().ToString()));
 	}
 
 	protected void OnLocalPlayerFactionChanged(SCR_PlayerFactionAffiliationComponent component, Faction previousFaction, Faction newFaction)
 	{
-		string newFactionName = "Unknown";
-		if (newFaction)
-			newFactionName = newFaction.GetFactionName();
-
-		abu_JIP_Debug.LogInfo(string.Format("PS_ManualMarker OnLocalPlayerFactionChanged - NewFaction: %1, Marker: %2", newFactionName, GetOrigin().ToString()));
+		if (!newFaction)
+			return;
 
 		UnsubscribeFromFactionChange();
 		UnsubscribeFromPSFactionChange();
@@ -94,7 +90,6 @@ modded class PS_ManualMarker
 			if (!m_wRoot)
 			{
 				CreateMapWidget(m_MapEntity.GetMapConfig());
-				abu_JIP_Debug.LogInfo(string.Format("PS_ManualMarker created widget after faction change - Faction: %1, Marker: %2", newFactionName, GetOrigin().ToString()));
 			}
 		}
 		else
@@ -102,7 +97,6 @@ modded class PS_ManualMarker
 			if (m_wRoot)
 			{
 				DeleteMapWidget(m_MapEntity.GetMapConfig());
-				abu_JIP_Debug.LogInfo(string.Format("PS_ManualMarker removed widget after faction change - Faction: %1, Marker: %2", newFactionName, GetOrigin().ToString()));
 			}
 		}
 	}
@@ -118,7 +112,6 @@ modded class PS_ManualMarker
 
 		playableManager.GetOnFactionChange().Insert(OnPSFactionChanged);
 		m_bPSFactionChangeSubscribed = true;
-		abu_JIP_Debug.LogInfo(string.Format("PS_ManualMarker Subscribed to PS_PlayableManager faction change - Marker: %1", GetOrigin().ToString()));
 	}
 
 	protected void OnPSFactionChanged(int playerId, FactionKey factionKey, FactionKey factionKeyOld)
@@ -127,7 +120,6 @@ modded class PS_ManualMarker
 		if (!pc || pc.GetPlayerId() != playerId)
 			return;
 
-		abu_JIP_Debug.LogInfo(string.Format("PS_ManualMarker OnPSFactionChanged - FactionKey: %1, Marker: %2", factionKey, GetOrigin().ToString()));
 
 		if (factionKey == "")
 			return;
@@ -143,7 +135,6 @@ modded class PS_ManualMarker
 			if (!m_wRoot)
 			{
 				CreateMapWidget(m_MapEntity.GetMapConfig());
-				abu_JIP_Debug.LogInfo(string.Format("PS_ManualMarker created widget after PS faction change - FactionKey: %1, Marker: %2", factionKey, GetOrigin().ToString()));
 			}
 		}
 		else
@@ -151,7 +142,6 @@ modded class PS_ManualMarker
 			if (m_wRoot)
 			{
 				DeleteMapWidget(m_MapEntity.GetMapConfig());
-				abu_JIP_Debug.LogInfo(string.Format("PS_ManualMarker removed widget after PS faction change - FactionKey: %1, Marker: %2", factionKey, GetOrigin().ToString()));
 			}
 		}
 	}
